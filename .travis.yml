@@ -16,7 +16,7 @@ matrix:
 
 before_script:
     - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
-    - flags="--prefer-dist --no-dev"
+    - flags="--prefer-dist"
     - composer install $flags
 
 script:
