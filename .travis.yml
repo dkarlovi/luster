@@ -15,15 +15,6 @@ php:
 
 matrix:
   fast_finish: true
-  include:
-    - php: hhvm-3.9
-      sudo: required
-      dist: trusty
-      group: edge
-    - php: hhvm
-      sudo: required
-      dist: trusty
-      group: edge
 
 before_script:
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
