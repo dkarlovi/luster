@@ -3,37 +3,39 @@
 
     <property name="vendorDir" value="${project.basedir}/vendor" override="true"/>
     <property name="vendorBinDir" value="${vendorDir}/bin" override="true"/>
+    <property name="rootDir" value="${project.basedir}" override="true"/>
     <property name="binDir" value="${project.basedir}/bin" override="true"/>
     <property name="srcDir" value="${project.basedir}/src" override="true"/>
-    <property name="phpmdFile" value="${project.basedir}/phpmd.xml" override="true"/>
+    <property name="testsDir" value="${project.basedir}/tests" override="true"/>
+    <property name="phpmdFile" value="/tests/phpmd.xml" override="true"/>
 
     <target name="style">
         <exec executable="${vendorBinDir}/php-cs-fixer" passthru="true" checkreturn="true">
-            <arg line="fix --dry-run"/>
-            <arg line="${srcDir}"/>
+            <arg line="fix --dry-run -vvv"/>
         </exec>
     </target>
 
     <target name="fix-style">
         <exec executable="${vendorBinDir}/php-cs-fixer" passthru="true" checkreturn="true">
-            <arg line="fix"/>
-            <arg line="${srcDir}"/>
+            <arg line="fix -vvv"/>
         </exec>
     </target>
 
     <target name="mess">
         <exec executable="${vendorBinDir}/phpmd" passthru="true" checkreturn="true">
-            <arg line="${srcDir}"/>
+            <arg line="${rootDir}"/>
             <arg line="text"/>
             <arg line="${phpmdFile}"/>
             <arg line="--strict"/>
+            <arg line="--exclude ${vendorDir}"/>
         </exec>
     </target>
 
     <target name="copy-paste">
         <exec executable="${vendorBinDir}/phpcpd" passthru="true" checkreturn="true">
-            <arg line="${srcDir}"/>
+            <arg line="${rootDir}"/>
             <arg line="--fuzzy"/>
+            <arg line="--exclude vendor"/>
         </exec>
     </target>
 
@@ -44,9 +46,7 @@
     </target>
 
     <target name="test">
-        <exec executable="${vendorBinDir}/security-checker" passthru="true" checkreturn="true">
-            <arg line="security:check"/>
-        </exec>
+        <exec executable="${vendorBinDir}/phpunit" passthru="true" checkreturn="true"/>
     </target>
 
     <target name="ci" depends="style,mess,copy-paste,security,test">
