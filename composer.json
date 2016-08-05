@@ -10,10 +10,14 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Dkarlovi\\Luster\\": "src/Luster" }
+        "psr-4": {
+            "Dkarlovi\\Luster\\": "src/Luster"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Dkarlovi\\Luster\\Test\\": "tests/Luster/Test" }
+        "psr-4": {
+            "Dkarlovi\\Luster\\Test\\": "tests/Luster/Test"
+        }
     },
     "bin": [
         "bin/luster"
@@ -28,6 +32,7 @@
         "symfony/console": "^3.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.4"
+        "phpunit/phpunit": "^5.4",
+        "friendsofphp/php-cs-fixer": "^1.11"
     }
 }
