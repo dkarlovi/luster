@@ -11,13 +11,13 @@
 
     <target name="style">
         <exec executable="${vendorBinDir}/php-cs-fixer" passthru="true" checkreturn="true">
-            <arg line="fix --dry-run -vvv"/>
+            <arg line="fix --diff --dry-run -v"/>
         </exec>
     </target>
 
     <target name="fix-style">
         <exec executable="${vendorBinDir}/php-cs-fixer" passthru="true" checkreturn="true">
-            <arg line="fix -vvv"/>
+            <arg line="fix --diff -v"/>
         </exec>
     </target>
 
