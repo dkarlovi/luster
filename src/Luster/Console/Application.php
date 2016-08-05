@@ -11,6 +11,7 @@
 
 namespace Dkarlovi\Luster\Console;
 
+use Dkarlovi\Luster\Command\SessionCommand;
 use Symfony\Component\Console\Application as BaseApplication;
 
 /**
@@ -26,5 +27,22 @@ class Application extends BaseApplication
     public function __construct()
     {
         parent::__construct('Luster');
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Symfony\Component\Console\Exception\LogicException
+     */
+    protected function getDefaultCommands()
+    {
+        $commands = array_merge(
+            parent::getDefaultCommands(),
+            [
+                new SessionCommand(),
+            ]
+        );
+
+        return $commands;
     }
 }
