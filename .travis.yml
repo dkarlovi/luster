@@ -1,6 +1,8 @@
 language: php
 
-sudo: false
+sudo: required
+dist: trusty
+group: edge
 
 cache:
   directories:
@@ -9,15 +11,24 @@ cache:
 php:
   - 5.6
   - 7.0
-  - hhvm
+  - hhvm-3.9
 
 matrix:
   fast_finish: true
+  include:
+    - php: hhvm-3.9
+      sudo: required
+      dist: trusty
+      group: edge
+    - php: hhvm
+      sudo: required
+      dist: trusty
+      group: edge
 
 before_script:
-    - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
-    - flags="--prefer-dist"
-    - composer install $flags
+  - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
+  - flags="--prefer-dist"
+  - composer install $flags
 
 script:
-    - vendor/bin/phing ci
+  - vendor/bin/phing ci
