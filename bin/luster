@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+if (version_compare('5.6.0', PHP_VERSION, '>')) {
+    fwrite(STDERR, 'Luster requires PHP 5.6+' . PHP_EOL);
+    exit(1);
+}
+
+if (PHP_SAPI !== 'cli') {
+    fwrite(STDERR, 'Luster must be invoked via CLI version of PHP'.PHP_EOL);
+    exit(1);
+}
+
+if (!ini_get('date.timezone')) {
+    ini_set('date.timezone', 'UTC');
+}
+
+require __DIR__.'/../src/bootstrap.php';
+
+use Dkarlovi\Luster\Console\Application;
+$application = new Application();
+$application->run();

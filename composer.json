@@ -1,0 +1,33 @@
+{
+    "name": "dkarlovi/luster",
+    "description": "Log User Scenario Testing, Extracting, Reporting",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dalibor Karlović",
+            "email": "dkarlovi@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Dkarlovi\\Luster\\": "src/Luster" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Dkarlovi\\Luster\\Test\\": "tests/Luster/Test" }
+    },
+    "bin": [
+        "bin/luster"
+    ],
+    "config": {
+        "platform": {
+            "php": "5.6.0"
+        }
+    },
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "symfony/console": "^3.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    }
+}
