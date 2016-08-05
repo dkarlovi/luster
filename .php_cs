@@ -19,8 +19,10 @@ return Symfony\CS\Config\Config::create()
             'ordered_use',
             'php_unit_construct',
             'php_unit_strict',
+            'phpdoc_order',
             'strict',
             'strict_param',
+            'short_array_syntax',
             '-empty_return',
         ]
     )
