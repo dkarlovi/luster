@@ -17,9 +17,10 @@ matrix:
   fast_finish: true
 
 before_script:
-  - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
-  - flags="--prefer-dist"
-  - composer install $flags
+  - composer install --prefer-dist --no-interaction --no-progress
 
 script:
   - vendor/bin/phing ci
+
+after_success:
+  - travis_retry php vendor/bin/coveralls -v

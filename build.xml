@@ -7,6 +7,7 @@
     <property name="binDir" value="${project.basedir}/bin" override="true"/>
     <property name="srcDir" value="${project.basedir}/src" override="true"/>
     <property name="testsDir" value="${project.basedir}/tests" override="true"/>
+    <property name="logsDir" value="${project.basedir}/build/logs" override="true"/>
     <property name="phpmdFile" value="/tests/phpmd.xml" override="true"/>
 
     <target name="style">
@@ -16,7 +17,7 @@
     </target>
 
     <target name="fix-style">
-        <exec executable="${vendorBinDir}/php-cs-fixer" passthru="true" checkreturn="true">
+        <exec executable="${vendorBinDir}/php-cs-fixer" passthru="true">
             <arg line="fix --diff -v"/>
         </exec>
     </target>
@@ -49,7 +50,13 @@
         <exec executable="${vendorBinDir}/phpunit" passthru="true" checkreturn="true"/>
     </target>
 
-    <target name="ci" depends="style,mess,copy-paste,security,test">
+    <target name="test-coverage">
+        <exec executable="${vendorBinDir}/phpunit" passthru="true" checkreturn="true">
+            <arg line=" --coverage-clover ${logsDir}/clover.xml"/>
+        </exec>
+    </target>
+
+    <target name="ci" depends="style,mess,copy-paste,security,test-coverage">
         <echo message="Build complete!"/>
     </target>
 
