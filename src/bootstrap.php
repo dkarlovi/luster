@@ -9,36 +9,23 @@
  * with this source code in the file LICENSE.
  */
 
-/*
- * Inspired by composer's bootstrap.php
- *
- * (c) Nils Adermann <naderman@naderman.de>
- *     Jordi Boggiano <j.boggiano@seld.be>
- */
+$autoLoaders = [
+    // own auto-loader
+    __DIR__.'/../vendor/autoload.php',
 
-/**
- * @param $file
- *
- * @return bool|Composer\Autoload\ClassLoader
- */
-function includeIfExists($file)
-{
-    if (true === file_exists($file)) {
+    // project auto-loader
+    __DIR__.'/../../../autoload.php',
+];
+
+foreach ($autoLoaders as $autoLoader) {
+    if (true === file_exists($autoLoader)) {
         /* @noinspection PhpIncludeInspection */
-        return include $file;
+        return include $autoLoader;
     }
-
-    return false;
 }
 
-if (false === ($loader = includeIfExists(__DIR__.'/../vendor/autoload.php'))
-    && false === ($loader = includeIfExists(__DIR__.'/../../../autoload.php'))
-) {
-    fwrite(
-        STDERR,
-        'You must set up the project dependencies using `composer install`'.PHP_EOL
-    );
-    exit(1);
-}
-
-return $loader;
+fwrite(
+    STDERR,
+    'You must set up the project dependencies using `composer install`'.PHP_EOL
+);
+exit(1);
