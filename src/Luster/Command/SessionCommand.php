@@ -14,6 +14,7 @@ namespace Dkarlovi\Luster\Command;
 use Dkarlovi\Luster\Reader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,9 +47,20 @@ class SessionCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $path = $input->getArgument('path');
-        $reader = new Reader();
         try {
-            $report = $reader->read($path);
+            $reader = new Reader($path);
+            $report = $reader->read();
+            /*
+            $progress = new ProgressBar($output, $reader->count());
+            $progress->setRedrawFrequency(200);
+            $progress->start();
+            $report = $reader->read(
+                function () use ($progress) {
+                    $progress->advance();
+                }
+            );
+            // $progress->finish();
+            */
             $output->writeln($report);
         } catch (\InvalidArgumentException $ex) {
             throw new InvalidArgumentException($ex->getMessage(), $ex->getCode());

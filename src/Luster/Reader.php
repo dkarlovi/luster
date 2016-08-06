@@ -14,23 +14,27 @@ namespace Dkarlovi\Luster;
 /**
  * Class Reader.
  */
-class Reader
+class Reader implements \Countable
 {
     const FILE_UNREADABLE = 1;
-    const FILE_UNKNOWN = 2;
+    const FILE_INEXISTENT = 2;
+
+    /** @var \SplFileObject */
+    private $file;
+
+    /** @var int */
+    private $count;
 
     /**
      * @param string $path
      *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
-    public function read($path)
+    public function __construct($path)
     {
         if (false === file_exists($path)) {
             throw new \InvalidArgumentException(
-                sprintf('Cannot access "%1$s": no such file', $path), self::FILE_UNKNOWN
+                sprintf('Cannot access "%1$s": no such file', $path), self::FILE_INEXISTENT
             );
         } elseif (false === is_readable($path)) {
             throw new \InvalidArgumentException(
@@ -38,7 +42,27 @@ class Reader
                 self::FILE_UNREADABLE
             );
         }
+        $this->file = new \SplFileObject($path, 'r');
+    }
 
-        return realpath($path);
+    public function read()
+    {
+        return $this->count().' '.$this->file->getFilename();
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        if (null === $this->count) {
+            $current = $this->file->key();
+            $this->file->rewind();
+            $this->file->seek(PHP_INT_MAX);
+            $this->count = ($this->file->key() + 1);
+            $this->file->seek($current);
+        }
+
+        return $this->count;
     }
 }
