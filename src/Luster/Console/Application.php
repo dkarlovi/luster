@@ -36,6 +36,7 @@ class Application extends BaseApplication
      */
     protected function getDefaultCommands()
     {
+        /** @var \Symfony\Component\Console\Command\Command[] $commands */
         $commands = array_merge(
             parent::getDefaultCommands(),
             [
