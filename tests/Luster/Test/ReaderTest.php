@@ -61,4 +61,56 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 
         self::assertEquals(3, $reader->count());
     }
+
+    /**
+     * @covers \Dkarlovi\Luster\Reader::read
+     *
+     * @uses   \Dkarlovi\Luster\Reader::__construct
+     */
+    public function testCanProcessAFileLineByLinePassingItToCallbacks()
+    {
+        $fileSystem = new FileSystem();
+        $fileSystem->createFile('/test.log', implode("\n", ['one', 'two']));
+
+        $mock = $this->getMockBuilder(\stdClass::class)
+            ->setMethods(['reverse', 'rot13', 'strlen'])
+            ->getMock();
+
+        // first line: "one"
+        $mock->expects(static::at(0))
+            ->method('reverse')
+            ->with('one')
+            ->will(static::returnCallback('strrev'));
+        $mock->expects(static::at(1))
+            ->method('rot13')
+            ->with('eno')
+            ->will(static::returnCallback('str_rot13'));
+        $mock->expects(static::at(2))
+            ->method('strlen')
+            ->with('rab')
+            ->will(static::returnCallback('strlen'));
+
+        // second line: "two"
+        $mock->expects(static::at(3))
+            ->method('reverse')
+            ->with('two')
+            ->will(static::returnCallback('strrev'));
+        $mock->expects(static::at(4))
+            ->method('rot13')
+            ->with('owt')
+            ->will(static::returnCallback('str_rot13'));
+        $mock->expects(static::at(5))
+            ->method('strlen')
+            ->with('bjg')
+            ->will(static::returnCallback('strlen'));
+
+        $reader = new Reader($fileSystem->path('/test.log'));
+        $reader->read(
+            [
+                [$mock, 'reverse'],
+                [$mock, 'rot13'],
+                [$mock, 'strlen'],
+            ]
+        );
+    }
 }

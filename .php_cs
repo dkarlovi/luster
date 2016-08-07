@@ -11,6 +11,7 @@ EOF;
 
 Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
 
+/** @noinspection PhpUndefinedMethodInspection */
 return Symfony\CS\Config\Config::create()
     ->setUsingCache(true)
     ->fixers(

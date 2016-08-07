@@ -45,9 +45,22 @@ class Reader implements \Countable
         $this->file = new \SplFileObject($path, 'r');
     }
 
-    public function read()
+    /**
+     * @param callable[] $callbacks
+     *
+     * @return string
+     */
+    public function read(array $callbacks)
     {
-        return $this->count().' '.$this->file->getFilename();
+        /** @var string $line */
+        foreach ($this->file as $line) {
+            $value = trim($line);
+            foreach ($callbacks as $callback) {
+                $value = call_user_func($callback, $value);
+            }
+        }
+
+        return $this;
     }
 
     /**

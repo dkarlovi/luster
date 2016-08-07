@@ -48,22 +48,33 @@ class SessionCommand extends Command
     {
         $path = $input->getArgument('path');
         try {
-            $reader = new Reader($path);
-            $report = $reader->read();
-            /*
-            $progress = new ProgressBar($output, $reader->count());
-            $progress->setRedrawFrequency(200);
-            $progress->start();
-            $report = $reader->read(
-                function () use ($progress) {
-                    $progress->advance();
-                }
-            );
-            // $progress->finish();
-            */
-            $output->writeln($report);
+            $this->readFileWithProgressBar($output, $path);
         } catch (\InvalidArgumentException $ex) {
             throw new InvalidArgumentException($ex->getMessage(), $ex->getCode());
         }
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param $path
+     *
+     * @throws \Symfony\Component\Console\Exception\LogicException
+     * @throws \InvalidArgumentException
+     */
+    private function readFileWithProgressBar(OutputInterface $output, $path)
+    {
+        $reader = new Reader($path);
+        $progress = new ProgressBar($output, $reader->count());
+        $progress->setRedrawFrequency(200);
+        $progress->start();
+        $reader->read(
+            [
+                function () use ($progress) {
+                    $progress->advance();
+                },
+            ]
+        );
+        $progress->finish();
+        $output->writeln('Done');
     }
 }
