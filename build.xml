@@ -60,7 +60,7 @@
         <echo message="Build complete!"/>
     </target>
 
-    <target name="release" depends="fix-style,mess,copy-paste,security,test">
+    <target name="release" depends="fix-style,mess,copy-paste,test">
         <echo message="Build complete!"/>
     </target>
 </project>
