@@ -1,0 +1,90 @@
+#!/usr/bin/env php
+<?php
+
+// NOTE:
+// this development utility converts well-tested patterns used in Logstash's grok plugin
+// from a weird-ass Ruby (?) format to something which should in theory (fingers crossed)
+// be usable by other languages, PHP specifically. It dumps them in YAML, for now.
+//
+// Pattern source is this repo: https://github.com/logstash-plugins/logstash-patterns-core
+use Symfony\Component\Yaml\Yaml;
+
+$root = dirname(__DIR__);
+require $root.'/vendor/autoload.php';
+
+$dir = $root.'/build/logstash-patterns-core/patterns';
+if (false === is_dir($dir)) {
+    fwrite(STDERR, 'build-pattern requires Grok patterns'.PHP_EOL);
+    exit(1);
+}
+
+/**
+ * @param string $path
+ * @param array $patterns
+ *
+ * @return array
+ */
+function extractPatterns($path, array $patterns = [])
+{
+    $incompletePatterns = [];
+
+    $file = file($path);
+    foreach ($file as $line) {
+        $line = trim($line);
+        if (!$line || preg_match('/^#/', $line)) {
+            // empty lines and comments
+            continue;
+        }
+
+        // patterns look like:
+        // PATTERN_LABEL <pattern with optional %{PREVIOUS_LABEL:optional_placeholder_name}>
+        list($lineLabel, $linePattern) = preg_split('/(\s)/', $line, PREG_SPLIT_DELIM_CAPTURE);
+        if (true === array_key_exists($lineLabel, $patterns)) {
+            throw new RuntimeException(sprintf('Duplicate pattern label "%1$s"', $lineLabel));
+        }
+
+        // does this pattern needs another pattern to complete?
+        if (0 < preg_match_all(
+                '/\%\{(?<label>\w+)(:(?<placeholder>[^}]+))?\}/',
+                $linePattern,
+                $matches,
+                PREG_SET_ORDER
+            )
+        ) {
+            $incompletePatterns[$lineLabel] = compact('linePattern', 'matches');
+        } else {
+            $patterns[$lineLabel] = $linePattern;
+        }
+    }
+
+    // TODO: this needs to loop around again to complete everything or throw an error trying
+    foreach ($incompletePatterns as $incompleteLabel => $incompletePattern) {
+        $find = [];
+        $replace = [];
+        /** @var array $incompletePatternMatches */
+        $incompletePatternMatches = $incompletePattern['matches'];
+        foreach ($incompletePatternMatches as $match) {
+            $matchLabel = $match['label'];
+            $find[] = $match[0];
+            if (false === array_key_exists($matchLabel, $patterns)) {
+                printf('Cannot resolve %1$s in %2$s, skipping for now'."\n", $matchLabel, $incompleteLabel);
+                continue 2;
+            }
+
+            if (true === array_key_exists('placeholder', $match)) {
+                $replace[] = '(?<'.$match['placeholder'].'>'.$patterns[$matchLabel].')';
+            } else {
+                $replace[] = $patterns[$matchLabel];
+            }
+        }
+        $patterns[$incompleteLabel] = str_replace($find, $replace, $incompletePattern['linePattern']);
+        unset($incompletePatterns[$incompleteLabel]);
+    }
+    ksort($patterns);
+
+    return $patterns;
+}
+
+$patterns = extractPatterns($dir.'/grok-patterns');
+file_put_contents($root.'/resources/grok.php', var_export($patterns, true));
+file_put_contents($root.'/resources/grok.yml', Yaml::dump($patterns));
