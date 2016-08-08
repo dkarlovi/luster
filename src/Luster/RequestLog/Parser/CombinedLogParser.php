@@ -50,13 +50,13 @@ class CombinedLogParser
                 ->setClientIp($parsed['clientip'])
                 ->setIdent($this->filter($parsed['ident']))
                 ->setAuth($this->filter($parsed['auth']))
-                ->setTimestamp($this->formatDateTime($parsed['timestamp'], $errors))
+                ->setTimestamp($this->formatDateTime($parsed['timestamp'], $errors, 'timestamp'))
                 ->setVerb($parsed['verb'])
                 ->setRequest($parsed['request'])
                 ->setVersion($parsed['httpversion'])
-                ->setRawRequest($parsed['rawrequest'])
-                ->setResponse($parsed['response'])
-                ->setBytes($parsed['bytes'])
+                ->setRawRequest($this->filter($parsed['rawrequest']))
+                ->setResponse((int) $parsed['response'])
+                ->setBytes((int) $parsed['bytes'])
                 ->setReferrer($this->filter($parsed['referrer']))
                 ->setAgent($this->filter($parsed['agent']));
         }
@@ -72,7 +72,8 @@ class CombinedLogParser
      */
     private function filter($value)
     {
-        if ('-' === $value || '"-"' === $value) {
+        $value = trim($value, '"');
+        if ('' === $value || '-' === $value) {
             return null;
         }
 
@@ -82,16 +83,16 @@ class CombinedLogParser
     /**
      * @param string $timestamp
      * @param array  $errors
+     * @param string $name
      *
      * @return \DateTime|null
      */
-    private function formatDateTime($timestamp, array &$errors)
+    private function formatDateTime($timestamp, array &$errors, $name)
     {
         $dateTime = date_create_from_format($this->dateFormat, $timestamp);
         $report = date_get_last_errors();
         if (0 < $report['error_count'] || 0 < $report['warning_count']) {
-            /* @noinspection ReferenceMismatchInspection */
-            $errors = array_merge($errors, $report['errors'], $report['warnings']);
+            $errors[$name] = array_merge($report['errors'], $report['warnings']);
             $dateTime = null;
         }
 
