@@ -11,6 +11,8 @@
 
 namespace Dkarlovi\Luster\Command;
 
+use Dkarlovi\Luster\HttpRequestLogEntry;
+use Dkarlovi\Luster\Parser;
 use Dkarlovi\Luster\Reader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -56,7 +58,7 @@ class SessionCommand extends Command
 
     /**
      * @param OutputInterface $output
-     * @param $path
+     * @param string          $path
      *
      * @throws \Symfony\Component\Console\Exception\LogicException
      * @throws \InvalidArgumentException
@@ -67,14 +69,21 @@ class SessionCommand extends Command
         $progress = new ProgressBar($output, $reader->count());
         $progress->setRedrawFrequency(200);
         $progress->start();
+        $parser = new Parser();
         $reader->read(
             [
-                function () use ($progress) {
+                function ($line) use ($parser) {
+                    return $parser->parse($line);
+                },
+                function (HttpRequestLogEntry $line) use ($progress) {
                     $progress->advance();
+
+                    return $line;
                 },
             ]
         );
         $progress->finish();
         $output->writeln('Done');
+        $output->writeln(memory_get_peak_usage(true));
     }
 }
