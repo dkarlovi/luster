@@ -16,6 +16,8 @@ namespace Dkarlovi\Luster\RequestLog;
  */
 class LogEntry
 {
+    /** @var string */
+    private $rawLogEntry;
     /** @var array */
     private $parseErrors;
     /** @var string */
@@ -44,6 +46,24 @@ class LogEntry
     private $agent;
 
     /**
+     * LogEntry constructor.
+     *
+     * @param string $rawLogEntry
+     */
+    public function __construct($rawLogEntry)
+    {
+        $this->rawLogEntry = $rawLogEntry;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRawLogEntry()
+    {
+        return $this->rawLogEntry;
+    }
+
+    /**
      * @return array
      */
     public function getParseErrors()
@@ -68,7 +88,7 @@ class LogEntry
      */
     public function isValid()
     {
-        return (bool) $this->parseErrors;
+        return !$this->parseErrors;
     }
 
     /**

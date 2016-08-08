@@ -42,7 +42,7 @@ class CombinedLogParser
      */
     public function parse($line)
     {
-        $logEntry = new LogEntry();
+        $logEntry = new LogEntry($line);
         $errors = ['Parsing failure'];
         if (true === (bool) preg_match($this->optimized, $line, $parsed)) {
             $errors = [];

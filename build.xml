@@ -28,7 +28,7 @@
             <arg line="text"/>
             <arg line="${phpmdFile}"/>
             <arg line="--strict"/>
-            <arg line="--exclude ${vendorDir}"/>
+            <arg line="--exclude ${vendorDir},${testsDir}"/>
         </exec>
     </target>
 
