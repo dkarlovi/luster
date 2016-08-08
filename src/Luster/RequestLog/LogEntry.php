@@ -9,12 +9,12 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Dkarlovi\Luster;
+namespace Dkarlovi\Luster\RequestLog;
 
 /**
- * Class HttpRequestLogEntry.
+ * Class LogEntry.
  */
-class HttpRequestLogEntry
+class LogEntry
 {
     /** @var array */
     private $parseErrors;
@@ -54,7 +54,7 @@ class HttpRequestLogEntry
     /**
      * @param array $parseErrors
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setParseErrors(array $parseErrors)
     {
@@ -82,7 +82,7 @@ class HttpRequestLogEntry
     /**
      * @param string $clientIp
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setClientIp($clientIp)
     {
@@ -102,7 +102,7 @@ class HttpRequestLogEntry
     /**
      * @param string $ident
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setIdent($ident)
     {
@@ -122,7 +122,7 @@ class HttpRequestLogEntry
     /**
      * @param string $auth
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setAuth($auth)
     {
@@ -140,9 +140,9 @@ class HttpRequestLogEntry
     }
 
     /**
-     * @param \DateTime $timestamp
+     * @param \DateTime|null $timestamp
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setTimestamp($timestamp)
     {
@@ -162,7 +162,7 @@ class HttpRequestLogEntry
     /**
      * @param string $verb
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setVerb($verb)
     {
@@ -182,7 +182,7 @@ class HttpRequestLogEntry
     /**
      * @param string $request
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setRequest($request)
     {
@@ -202,7 +202,7 @@ class HttpRequestLogEntry
     /**
      * @param string $version
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setVersion($version)
     {
@@ -222,7 +222,7 @@ class HttpRequestLogEntry
     /**
      * @param string $rawRequest
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setRawRequest($rawRequest)
     {
@@ -242,7 +242,7 @@ class HttpRequestLogEntry
     /**
      * @param int $response
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setResponse($response)
     {
@@ -262,7 +262,7 @@ class HttpRequestLogEntry
     /**
      * @param int $bytes
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setBytes($bytes)
     {
@@ -282,7 +282,7 @@ class HttpRequestLogEntry
     /**
      * @param string $referrer
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setReferrer($referrer)
     {
@@ -302,7 +302,7 @@ class HttpRequestLogEntry
     /**
      * @param string $agent
      *
-     * @return HttpRequestLogEntry
+     * @return LogEntry
      */
     public function setAgent($agent)
     {
