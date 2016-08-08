@@ -11,12 +11,13 @@
 
 namespace Dkarlovi\Luster\Command;
 
+use Dkarlovi\Luster\Console\Helper\AnalysisProgressBar;
 use Dkarlovi\Luster\Reader;
+use Dkarlovi\Luster\RequestLog\Analysis;
 use Dkarlovi\Luster\RequestLog\LogEntry;
 use Dkarlovi\Luster\RequestLog\Parser\CombinedLogParser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Dalibor Karlović
  */
-class SessionCommand extends Command
+class AnalyzeCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -36,7 +37,7 @@ class SessionCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('session')
+            ->setName('analyze')
             ->setDescription('Analyze a log file and extract user session information')
             ->addArgument('path', InputArgument::REQUIRED, 'Path to the access log');
     }
@@ -65,24 +66,32 @@ class SessionCommand extends Command
      */
     private function readFileWithProgressBar(OutputInterface $output, $path)
     {
-        $reader = new Reader($path);
-        $progress = new ProgressBar($output, $reader->count());
-        $progress->setRedrawFrequency(200);
-        $progress->start();
         $parser = new CombinedLogParser();
+        $analysis = new Analysis();
+        $reader = new Reader($path);
+        $progress = new AnalysisProgressBar($analysis, $output, $reader->count());
+        $progress->setRedrawFrequency(1234);
+        $progress->start();
         $reader->read(
             [
                 function ($line) use ($parser) {
                     return $parser->parse($line);
                 },
-                function (LogEntry $line) use ($progress) {
+                function (LogEntry $entry) use ($analysis) {
+                    $analysis->ingest($entry);
+
+                    return $entry;
+                },
+                function (LogEntry $entry) use ($progress) {
                     $progress->advance();
 
-                    return $line;
+                    return $entry;
                 },
             ]
         );
         $progress->finish();
+        $progress->clear();
+        print_r($analysis);
         $output->writeln('Done');
         $output->writeln(memory_get_peak_usage(true));
     }

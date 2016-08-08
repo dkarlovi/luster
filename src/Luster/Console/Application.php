@@ -11,7 +11,7 @@
 
 namespace Dkarlovi\Luster\Console;
 
-use Dkarlovi\Luster\Command\SessionCommand;
+use Dkarlovi\Luster\Command\AnalyzeCommand;
 use Symfony\Component\Console\Application as BaseApplication;
 
 /**
@@ -40,7 +40,7 @@ class Application extends BaseApplication
         $commands = array_merge(
             parent::getDefaultCommands(),
             [
-                new SessionCommand(),
+                new AnalyzeCommand(),
             ]
         );
 
