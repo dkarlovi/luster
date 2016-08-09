@@ -1,0 +1,26 @@
+build: off
+shallow_clone: false
+clone_folder: C:\projects\luster
+cache:
+    - '%APPDATA%\Composer'
+
+install:
+    - choco install -y php
+    - SET PATH=C:\tools\php;%PATH%
+    - cd C:\tools\php
+    - copy php.ini-production php.ini
+    - echo date.timezone="UTC" >> php.ini
+    - echo memory_limit=512M >> php.ini
+    - echo extension_dir=ext >> php.ini
+    - echo extension=php_curl.dll >> php.ini
+    - echo extension=php_openssl.dll >> php.ini
+    - cd C:\tools
+    - appveyor DownloadFile https://getcomposer.org/composer.phar
+
+before_test:
+    - cd C:\projects\luster
+    - php C:\tools\composer.phar update --no-interaction
+
+test_script:
+    - cd C:\projects\luster
+    - exec vendor\bin\phing.bat
