@@ -2,34 +2,40 @@ build: off
 shallow_clone: false
 clone_folder: C:\projects\luster
 cache:
-    - '%APPDATA%\Composer'
+  - '%LOCALAPPDATA%\Composer\Files'
+  - c:\tools\php -> appveyor.yml
 
 environment:
-    matrix:
-        - php_ver: 7.0.9
-        - php_ver: 5.6.17
+  matrix:
+    - php_ver: 7.0.9
+    - php_ver: 5.6.17
 
 platform:
   - x86
   - x64
 
+init:
+  - SET PATH=C:\Program Files\OpenSSL;c:\tools\php;%PATH%
+  - SET PHP=1
+
 install:
-    - choco install -y php -version %php_ver%
-    - SET PATH=C:\tools\php;%PATH%
-    - cd C:\tools\php
-    - copy php.ini-production php.ini
-    - echo date.timezone="UTC" >> php.ini
-    - echo memory_limit=512M >> php.ini
-    - echo extension_dir=ext >> php.ini
-    - echo extension=php_curl.dll >> php.ini
-    - echo extension=php_openssl.dll >> php.ini
-    - cd C:\tools
-    - appveyor DownloadFile https://getcomposer.org/composer.phar
+  - IF EXIST c:\tools\php (SET PHP=0)
+  - IF %PHP%==1 cinst -y OpenSSL.Light
+  - IF %PHP%==1 cinst -y php
+  - IF %PHP%==1 cd c:\tools\php
+  - IF %PHP%==1 copy php.ini-production php.ini /Y
+  - IF %PHP%==1 echo date.timezone="UTC" >> php.ini
+  - IF %PHP%==1 echo extension_dir=ext >> php.ini
+  - IF %PHP%==1 echo extension=php_openssl.dll >> php.ini
+  - IF %PHP%==1 echo extension=php_mbstring.dll >> php.ini
+  - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini
+  - cd C:\tools
+  - appveyor DownloadFile https://getcomposer.org/composer.phar
 
 before_test:
-    - cd C:\projects\luster
-    - php C:\tools\composer.phar update --no-interaction
+  - cd C:\projects\luster
+  - php C:\tools\composer.phar install--prefer-dist --no-interaction --no-progress
 
 test_script:
-    - cd C:\projects\luster
-    - vendor\bin\phing
+  - cd C:\projects\luster
+  - vendor\bin\phing.bat ci
