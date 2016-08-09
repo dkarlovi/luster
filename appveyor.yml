@@ -23,4 +23,4 @@ before_test:
 
 test_script:
     - cd C:\projects\luster
-    - exec vendor\bin\phing.bat
+    - vendor\bin\phing
