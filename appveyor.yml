@@ -34,7 +34,7 @@ install:
 
 before_test:
   - cd C:\projects\luster
-  - php C:\tools\composer.phar install--prefer-dist --no-interaction --no-progress
+  - php C:\tools\composer.phar install --prefer-dist --no-interaction --no-progress
 
 test_script:
   - cd C:\projects\luster
