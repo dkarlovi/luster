@@ -86,5 +86,5 @@ function extractPatterns($path, array $patterns = [])
 }
 
 $patterns = extractPatterns($dir.'/grok-patterns');
-file_put_contents($root.'/resources/grok.php', var_export($patterns, true));
-file_put_contents($root.'/resources/grok.yml', Yaml::dump($patterns));
+file_put_contents($root.'/build/grok.php', var_export($patterns, true));
+file_put_contents($root.'/build/grok.yml', Yaml::dump($patterns));
