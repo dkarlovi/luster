@@ -20,7 +20,7 @@ if (false === is_dir($dir)) {
 
 /**
  * @param string $path
- * @param array $patterns
+ * @param array  $patterns
  *
  * @return array
  */

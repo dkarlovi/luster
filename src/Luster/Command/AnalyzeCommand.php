@@ -18,7 +18,6 @@ use Dkarlovi\Luster\RequestLog\Parser\CombinedLogParser;
 use Dkarlovi\Luster\Scenario\ScenarioGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -70,10 +69,12 @@ class AnalyzeCommand extends Command
         $parser = new CombinedLogParser();
         $analysis = new Analysis();
         $reader = new Reader($path);
-        $progress = new ProgressBar($output, $reader->count());
         $scenarioGenerator = new ScenarioGenerator();
+        /*
+        $progress = new ProgressBar($output, $reader->count());
         $progress->setRedrawFrequency(1234);
         $progress->start();
+        */
         $reader->read(
             [
                 function ($line) use ($parser) {
@@ -81,7 +82,7 @@ class AnalyzeCommand extends Command
                 },
                 function (LogEntry $entry) use ($scenarioGenerator) {
                     $id = $scenarioGenerator->generateScenarioId($entry);
-                    $entry->setId($id);
+                    $entry->setScenarioId($id);
 
                     return $entry;
                 },
@@ -90,16 +91,18 @@ class AnalyzeCommand extends Command
 
                     return $entry;
                 },
+                /*
                 function (LogEntry $entry) use ($progress) {
                     $progress->advance();
 
                     return $entry;
                 },
+                */
             ]
         );
-        var_dump($scenarioGenerator);
-        $progress->finish();
-        $progress->clear();
+        // var_dump($scenarioGenerator);
+        // $progress->finish();
+        // $progress->clear();
         $output->writeln('Done');
         $output->writeln(memory_get_peak_usage(true));
     }

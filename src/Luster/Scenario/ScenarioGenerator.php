@@ -1,7 +1,6 @@
 <?php
 
 /*
-/*
  * This file is part of Luster.
  *
  * Copyright (c) 2016 Dalibor Karlović
@@ -40,6 +39,7 @@ class ScenarioGenerator
         $latestIndex = 0;
         $count = 0;
         if (true === array_key_exists($hash, $this->scenarios)) {
+            /** @var \DateTime $previousTimestamp */
             $previousTimestamp = $this->scenarios[$hash]['latestTimestamp'];
             $previousOffset = $latestTimestamp->getTimestamp() - $previousTimestamp->getTimestamp();
             if ($previousOffset >= $this->scenarioTtl) {
