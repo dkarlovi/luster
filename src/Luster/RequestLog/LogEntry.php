@@ -17,6 +17,8 @@ namespace Dkarlovi\Luster\RequestLog;
 class LogEntry
 {
     /** @var string */
+    private $scenarioId;
+    /** @var string */
     private $rawLogEntry;
     /** @var array */
     private $parseErrors;
@@ -53,6 +55,22 @@ class LogEntry
     public function __construct($rawLogEntry)
     {
         $this->rawLogEntry = $rawLogEntry;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScenarioId()
+    {
+        return $this->scenarioId;
+    }
+
+    /**
+     * @param string $scenarioId
+     */
+    public function setScenarioId($scenarioId)
+    {
+        $this->scenarioId = $scenarioId;
     }
 
     /**

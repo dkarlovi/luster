@@ -41,6 +41,18 @@ class LogEntryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \Dkarlovi\Luster\RequestLog\LogEntry::setScenarioId
+     * @covers \Dkarlovi\Luster\RequestLog\LogEntry::getScenarioId
+     *
+     * @uses   \Dkarlovi\Luster\RequestLog\LogEntry::__construct
+     */
+    public function testCanSetAndGetScenarioId()
+    {
+        $this->object->setScenarioId('scenario-1');
+        self::assertEquals('scenario-1', $this->object->getScenarioId());
+    }
+
+    /**
      * @covers \Dkarlovi\Luster\RequestLog\LogEntry::setParseErrors
      * @covers \Dkarlovi\Luster\RequestLog\LogEntry::getParseErrors
      *

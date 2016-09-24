@@ -17,13 +17,13 @@ namespace Dkarlovi\Luster\RequestLog;
 class Analysis
 {
     /** @var \DateTime */
-    public $timestampStart;
+    private $timestampStart;
     /** @var \DateTime */
-    public $timestampEnd;
+    private $timestampEnd;
     /** @var int */
-    public $total = 0;
+    private $total = 0;
     /** @var int */
-    public $valid = 0;
+    private $valid = 0;
     /** @var int[] */
     private $responseCodes = [
         '1xx' => 0,
@@ -35,7 +35,7 @@ class Analysis
     /** @var int */
     private $unknownResponseCodes = 0;
     /** @var LogEntry */
-    public $latestEntry;
+    private $latestEntry;
 
     /**
      * @param LogEntry $entry
